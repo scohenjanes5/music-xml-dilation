@@ -29,6 +29,25 @@ class Note:
     def __str__(self):
         return(f" Name: {self.step}, Octave number: {self.octave}, Duration: {self.duration}, Voice: {self.voice}, Type: {self.type}, Stem dir: {self.stem}")
     
+    def stretch(self, scaling_factor):
+        self.duration *= scaling_factor
+        if scaling_factor == 2:
+            idx_shift = +1
+        elif scaling_factor == 0.5:
+            idx_shift = -1
+
+        types = ["eigth", "quarter", "half", "whole", "twowholes"]
+        for i, type in enumerate(types):
+            if type == self.type:
+                self.type = types[i+idx_shift]
+                if self.type == "whole":
+                    self.stem = None
+                elif self.stem is None:
+                    self.stem = "up"
+
+                break
+
+    
 class Measure:
     """
         Initialize Measure object.
@@ -117,11 +136,6 @@ class Measure:
         print(self)
         for note in self.notes_list:
             print(note)
-
-    # def stretch(self, scaling_factor):
-    #     for note in self.notes_list:
-    #         note.duration *= scaling_factor
-    #     #for now scaling factor is 2 or 0.5, so we only need to worry about making 2 or 1/2 measures.
    
 class Passage:
 
@@ -129,6 +143,14 @@ class Passage:
         part_element = root_element.find(f".//part[@id='P{part_nuber}']")
 
         self.measure_list = self.measures_from_part(part_element)
+        self.important_measures = self.find_important_measures()
+
+    def find_important_measures(self):
+        indicies = []
+        for measure in self.measure_list:
+            if any(attr is not None for attr in (measure.divisions, measure.key, measure.ts_numerator, measure.ts_denominator, measure.clef_type, measure.clef_line)):
+                indicies.append(measure.number)
+        return indicies
 
     def measures_from_part(self, part_element):
         measures = []
@@ -138,7 +160,22 @@ class Passage:
             # print(measure_obj)
             # measure_obj.print_full_details()
 
-        return measures    
+        return measures
+    
+    def stretch(self, scaling_factor):
+        notes = []
+        # if new number of measures would be fractional, i.e. 2.5,
+        # 3rd will only be half filled. Round to avoid this.
+        new_num_measures = round(len(self.measure_list)*scaling_factor)
+        new_important_measure_numbers = [(int(i)-1)*scaling_factor + 1 for i, in self.important_measures]
+        print(new_important_measure_numbers)
+        print(f"{len(self.measure_list)} measures to {new_num_measures}")
+        for measure in self.measure_list:
+            for note in measure.notes_list:
+                note.stretch(scaling_factor)
+                # print(note)
+                notes.append(note)
+        
 
 
 def parse_musicxml(file_path):
@@ -153,6 +190,13 @@ file_path = "tuba_bg.musicxml"
 #file_path = "tuba_shortened.musicxml"
 scaling_factor = 2
 passage = parse_musicxml(file_path)
+# notes = [note for measure in passage.measure_list for note in measure.notes_list]
+# for note in notes:
+#     print(note)
+
+# print()
+
+passage.stretch(scaling_factor)
 
 # for measure in measures:
 #     for note in measure.notes_list:
