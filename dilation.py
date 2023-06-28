@@ -30,8 +30,36 @@ class Note:
         return(f" Name: {self.step}, Octave number: {self.octave}, Duration: {self.duration}, Voice: {self.voice}, Type: {self.type}, Stem dir: {self.stem}")
     
 class Measure:
+    """
+        Initialize Measure object.
 
-    def __init__(self, measure_element):
+        Args:
+            measure_element (optional): Measure element object to extract information from.
+            **kwargs: Additional keyword arguments to directly assign values to class inputs.
+                - n: Integer representing the number.
+                - divisions: Integer representing the divisions.
+                - key: String representing the key.
+                - ts_numerator: Integer representing the time signature numerator.
+                - ts_denominator: Integer representing the time signature denominator.
+                - clef_type: String representing the clef type.
+                - clef_line: Integer representing the clef line.
+                - notes_list: List of Note objects.
+    """
+
+    def __init__(self, measure_element=None, **kwargs):
+        if measure_element is not None:
+            self.info_from_measure_element(measure_element)
+        else:
+            self.number = kwargs.get('n')
+            self.divisions = kwargs.get('divisions')
+            self.key = kwargs.get('key')
+            self.ts_numerator = kwargs.get('ts_numerator')
+            self.ts_denominator = kwargs.get('ts_denominator')
+            self.clef_type = kwargs.get('clef_type')
+            self.clef_line = kwargs.get('clef_line')
+            self.notes_list = kwargs.get('notes_list')
+            
+    def info_from_measure_element(self, measure_element):
         self.number = measure_element.get("number")
         try:
             attribs = measure_element.find("attributes")
@@ -90,28 +118,48 @@ class Measure:
         for note in self.notes_list:
             print(note)
 
+    # def stretch(self, scaling_factor):
+    #     for note in self.notes_list:
+    #         note.duration *= scaling_factor
+    #     #for now scaling factor is 2 or 0.5, so we only need to worry about making 2 or 1/2 measures.
    
+class Passage:
+
+    def __init__(self, root_element, part_nuber=1):
+        part_element = root_element.find(f".//part[@id='P{part_nuber}']")
+
+        self.measure_list = self.measures_from_part(part_element)
+
+    def measures_from_part(self, part_element):
+        measures = []
+        for measure in part_element.findall("measure"):
+            measure_obj = Measure(measure)
+            measures.append(measure_obj)
+            # print(measure_obj)
+            # measure_obj.print_full_details()
+
+        return measures    
+
 
 def parse_musicxml(file_path):
     tree = ET.parse(file_path)
-    root = tree.getroot()    
+    root = tree.getroot()
 
-    measures = []
-
-    # Find the relevant part in the XML structure
-    part_element = root.find(".//part[@id='P1']")
-
-    for measure in part_element.findall("measure"):
-        measure_obj = Measure(measure)
-        measures.append(measure_obj)
-        # print(measure_obj)
-        measure_obj.print_full_details()
-
-    return measures    
+    return Passage(root)
 
 # Usage example
 file_path = "tuba_bg.musicxml"
 #file_path = "tuba_lengthened.musicxml"
 #file_path = "tuba_shortened.musicxml"
-notes = parse_musicxml(file_path)
+scaling_factor = 2
+passage = parse_musicxml(file_path)
+
+# for measure in measures:
+#     for note in measure.notes_list:
+#         note.duration *= scaling_factor
+
+# notes = [note for measure in passage.measure_list for note in measure.notes_list]
+# for note in notes:
+#     print(note)
+
 
