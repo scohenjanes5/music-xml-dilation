@@ -150,7 +150,7 @@ class Passage:
         for measure in self.measure_list:
             if any(attr is not None for attr in (measure.divisions, measure.key, measure.ts_numerator, measure.ts_denominator, measure.clef_type, measure.clef_line)):
                 indicies.append(measure.number)
-        # print(indicies)
+        return indicies
 
     def measures_from_part(self, part_element):
         measures = []
@@ -164,7 +164,11 @@ class Passage:
     
     def stretch(self, scaling_factor):
         notes = []
-        new_num_measures=len(self.measure_list)*scaling_factor
+        # if new number of measures would be fractional, i.e. 2.5,
+        # 3rd will only be half filled. Round to avoid this.
+        new_num_measures = round(len(self.measure_list)*scaling_factor)
+        new_important_indicies = [(int(i)-1)*scaling_factor for i, in self.important_measures]
+        print(new_important_indicies)
         for measure in self.measure_list:
             for note in measure.notes_list:
                 note.stretch(scaling_factor)
