@@ -129,6 +129,14 @@ class Passage:
         part_element = root_element.find(f".//part[@id='P{part_nuber}']")
 
         self.measure_list = self.measures_from_part(part_element)
+        self.important_measures = self.find_important_measures()
+
+    def find_important_measures(self):
+        indicies = []
+        for measure in self.measure_list:
+            if any(attr is not None for attr in (measure.divisions, measure.key, measure.ts_numerator, measure.ts_denominator, measure.clef_type, measure.clef_line)):
+                indicies.append(measure.number)
+        # print(indicies)
 
     def measures_from_part(self, part_element):
         measures = []
@@ -138,7 +146,7 @@ class Passage:
             # print(measure_obj)
             # measure_obj.print_full_details()
 
-        return measures    
+        return measures
 
 
 def parse_musicxml(file_path):
