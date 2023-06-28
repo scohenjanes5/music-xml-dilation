@@ -167,12 +167,13 @@ class Passage:
         # if new number of measures would be fractional, i.e. 2.5,
         # 3rd will only be half filled. Round to avoid this.
         new_num_measures = round(len(self.measure_list)*scaling_factor)
-        new_important_indicies = [(int(i)-1)*scaling_factor for i, in self.important_measures]
-        print(new_important_indicies)
+        new_important_measure_numbers = [(int(i)-1)*scaling_factor + 1 for i, in self.important_measures]
+        print(new_important_measure_numbers)
+        print(f"{len(self.measure_list)} measures to {new_num_measures}")
         for measure in self.measure_list:
             for note in measure.notes_list:
                 note.stretch(scaling_factor)
-                print(note)
+                # print(note)
                 notes.append(note)
         
 
@@ -189,11 +190,11 @@ file_path = "tuba_bg.musicxml"
 #file_path = "tuba_shortened.musicxml"
 scaling_factor = 2
 passage = parse_musicxml(file_path)
-notes = [note for measure in passage.measure_list for note in measure.notes_list]
-for note in notes:
-    print(note)
+# notes = [note for measure in passage.measure_list for note in measure.notes_list]
+# for note in notes:
+#     print(note)
 
-print()
+# print()
 
 passage.stretch(scaling_factor)
 
