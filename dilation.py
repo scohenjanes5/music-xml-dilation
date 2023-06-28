@@ -29,6 +29,25 @@ class Note:
     def __str__(self):
         return(f" Name: {self.step}, Octave number: {self.octave}, Duration: {self.duration}, Voice: {self.voice}, Type: {self.type}, Stem dir: {self.stem}")
     
+    def stretch(self, scaling_factor):
+        self.duration *= scaling_factor
+        if scaling_factor == 2:
+            idx_shift = +1
+        elif scaling_factor == 0.5:
+            idx_shift = -1
+
+        types = ["eigth", "quarter", "half", "whole", "twowholes"]
+        for i, type in enumerate(types):
+            if type == self.type:
+                self.type = types[i+idx_shift]
+                if self.type == "whole":
+                    self.stem = None
+                elif self.stem is None:
+                    self.stem = "up"
+
+                break
+
+    
 class Measure:
     """
         Initialize Measure object.
@@ -117,11 +136,6 @@ class Measure:
         print(self)
         for note in self.notes_list:
             print(note)
-
-    # def stretch(self, scaling_factor):
-    #     for note in self.notes_list:
-    #         note.duration *= scaling_factor
-    #     #for now scaling factor is 2 or 0.5, so we only need to worry about making 2 or 1/2 measures.
    
 class Passage:
 
@@ -147,6 +161,16 @@ class Passage:
             # measure_obj.print_full_details()
 
         return measures
+    
+    def stretch(self, scaling_factor):
+        notes = []
+        new_num_measures=len(self.measure_list)*scaling_factor
+        for measure in self.measure_list:
+            for note in measure.notes_list:
+                note.stretch(scaling_factor)
+                print(note)
+                notes.append(note)
+        
 
 
 def parse_musicxml(file_path):
@@ -161,6 +185,13 @@ file_path = "tuba_bg.musicxml"
 #file_path = "tuba_shortened.musicxml"
 scaling_factor = 2
 passage = parse_musicxml(file_path)
+notes = [note for measure in passage.measure_list for note in measure.notes_list]
+for note in notes:
+    print(note)
+
+print()
+
+passage.stretch(scaling_factor)
 
 # for measure in measures:
 #     for note in measure.notes_list:
