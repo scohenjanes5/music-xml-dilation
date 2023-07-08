@@ -26,17 +26,28 @@ env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.ex
 file_path = "tuba_bg.musicxml"  # Replace with the actual file path
 score = converter.parse(file_path)
 
-# score.show()
+# score.show('text')
 
 scaling_factor = 2.0  # Replace with your desired scaling factor
 
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
 
-# # Preserve the key signature for the first measure
+# Preserve the key signature for the first measure
 # first_measure = score.measure(1)
 # key_signature = first_measure.keySignature
+# print(key_signature)
 # modified_stream.append(key_signature)
+
+key_signature = score.recurse().getElementsByClass('KeySignature')[0]
+time_signature = score.recurse().getElementsByClass('TimeSignature')[0]
+tempo = score.recurse().getElementsByClass('MetronomeMark')[0]
+
+# print(key_signature, time_signature)
+
+modified_stream.append(tempo)
+modified_stream.append(key_signature)
+modified_stream.append(time_signature)
 
 for element in score.recurse().notesAndRests:
     if element.isNote or element.isRest:
@@ -44,7 +55,7 @@ for element in score.recurse().notesAndRests:
         modified_stream.append(element)
     
 # Show the modified passage
-modified_stream.show()
+modified_stream.show('text')
 
-# # output_file = "tuba_tilated.musicxml"  # Replace with the desired output file path
-# # new_stream.write('musicxml', fp=output_file)
+# output_file = "tuba_dilated.musicxml"  # Replace with the desired output file path
+# modified_stream.write('musicxml', fp=output_file)
