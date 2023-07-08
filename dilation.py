@@ -16,7 +16,10 @@ env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.ex
 # print('musicXML:  ', env['musicxmlPath'])
 # print('musescore: ', env['musescoreDirectPNGPath'])
 
-file_path = "tuba_bg.musicxml"  # Replace with the actual file path
+file_path = 'tuba-bg.musicxml'  # Replace with the actual file path
+parts = file_path.split(".")
+parts[0] += "-dilated"
+output_file = ".".join(parts)
 score = converter.parse(file_path)
 
 # score.show('text')
@@ -44,5 +47,5 @@ for element in score.recurse().notesAndRests:
 # Show the modified passage
 modified_stream.show('text')
 
-output_file = "tuba_dilated.musicxml"  # Replace with the desired output file path
+# Write output file
 modified_stream.write('musicxml', fp=output_file)
