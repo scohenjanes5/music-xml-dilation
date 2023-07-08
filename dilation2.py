@@ -17,12 +17,6 @@ env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.ex
 # print('musescore: ', env['musescoreDirectPNGPath'])
 
 
-# stream2 = stream.Stream()
-# n3 = note.Note('D#5')  # octave values can be included in creation arguments
-# stream2.repeatAppend(n3, 4)
-# stream2.show()
-
-
 file_path = "tuba_bg.musicxml"  # Replace with the actual file path
 score = converter.parse(file_path)
 
