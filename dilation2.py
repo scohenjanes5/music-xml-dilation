@@ -47,5 +47,5 @@ for element in score.recurse().notesAndRests:
 # Show the modified passage
 modified_stream.show('text')
 
-# output_file = "tuba_dilated.musicxml"  # Replace with the desired output file path
-# modified_stream.write('musicxml', fp=output_file)
+output_file = "tuba_dilated.musicxml"  # Replace with the desired output file path
+modified_stream.write('musicxml', fp=output_file)
