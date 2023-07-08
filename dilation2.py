@@ -33,21 +33,11 @@ scaling_factor = 2.0  # Replace with your desired scaling factor
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
 
-# Preserve the key signature for the first measure
-# first_measure = score.measure(1)
-# key_signature = first_measure.keySignature
-# print(key_signature)
-# modified_stream.append(key_signature)
-
 key_signature = score.recurse().getElementsByClass('KeySignature')[0]
 time_signature = score.recurse().getElementsByClass('TimeSignature')[0]
 tempo = score.recurse().getElementsByClass('MetronomeMark')[0]
 
-# print(key_signature, time_signature)
-
-modified_stream.append(tempo)
-modified_stream.append(key_signature)
-modified_stream.append(time_signature)
+modified_stream.append([tempo, key_signature, time_signature])
 
 for element in score.recurse().notesAndRests:
     if element.isNote or element.isRest:
