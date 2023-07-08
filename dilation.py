@@ -26,12 +26,15 @@ scaling_factor = 2.0  # Replace with your desired scaling factor
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
 
-instrument = score.recurse().getElementsByClass('Instrument')[0]
-key_signature = score.recurse().getElementsByClass('KeySignature')[0]
-time_signature = score.recurse().getElementsByClass('TimeSignature')[0]
-tempo = score.recurse().getElementsByClass('MetronomeMark')[0]
+important_elements = ['Instrument', 'KeySignature', 'TimeSignature', 'MetronomeMark']
 
-modified_stream.append([instrument, tempo, key_signature, time_signature])
+for i, element in enumerate(important_elements):
+    try:
+        important_elements[i] = score.recurse().getElementsByClass(element)[0]
+    except:
+        important_elements.remove(element)
+
+modified_stream.append(important_elements)
 
 for element in score.recurse().notesAndRests:
     if element.isNote or element.isRest:
