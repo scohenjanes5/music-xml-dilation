@@ -16,7 +16,6 @@ env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.ex
 # print('musicXML:  ', env['musicxmlPath'])
 # print('musescore: ', env['musescoreDirectPNGPath'])
 
-
 file_path = "tuba_bg.musicxml"  # Replace with the actual file path
 score = converter.parse(file_path)
 
@@ -27,11 +26,12 @@ scaling_factor = 2.0  # Replace with your desired scaling factor
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
 
+instrument = score.recurse().getElementsByClass('Instrument')[0]
 key_signature = score.recurse().getElementsByClass('KeySignature')[0]
 time_signature = score.recurse().getElementsByClass('TimeSignature')[0]
 tempo = score.recurse().getElementsByClass('MetronomeMark')[0]
 
-modified_stream.append([tempo, key_signature, time_signature])
+modified_stream.append([instrument, tempo, key_signature, time_signature])
 
 for element in score.recurse().notesAndRests:
     if element.isNote or element.isRest:
