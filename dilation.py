@@ -143,7 +143,7 @@ class Passage:
         part_element = root_element.find(f".//part[@id='P{part_nuber}']")
 
         self.measure_list = self.measures_from_part(part_element)
-        self.important_measures = self.find_important_measures()
+        self.important_measure_numbers = self.find_important_measures()
 
     def find_important_measures(self):
         indicies = []
@@ -167,14 +167,36 @@ class Passage:
         # if new number of measures would be fractional, i.e. 2.5,
         # 3rd will only be half filled. Round to avoid this.
         new_num_measures = round(len(self.measure_list)*scaling_factor)
-        new_important_measure_numbers = [(int(i)-1)*scaling_factor + 1 for i, in self.important_measures]
+        new_important_measure_numbers = [(int(i)-1)*scaling_factor + 1 for i, in self.important_measure_numbers]
         print(new_important_measure_numbers)
         print(f"{len(self.measure_list)} measures to {new_num_measures}")
         for measure in self.measure_list:
             for note in measure.notes_list:
                 note.stretch(scaling_factor)
-                # print(note)
+                #print(note)
                 notes.append(note)
+        
+        new_measures = []
+        num_found_special_measures = 0
+        #print(self.important_measure_numbers)
+        for i in range(1, new_num_measures+1):
+            new_measure = Measure(n = i)
+            if i in new_important_measure_numbers:
+                print(f"measure {i} is important")
+                special_measure_idx_from_old_list = int(self.important_measure_numbers[num_found_special_measures])
+                #print(special_measure_idx_from_old_list)
+                old_measure = self.measure_list[special_measure_idx_from_old_list]
+                new_measure.number = old_measure.number
+                new_measure.divisions = old_measure.divisions
+                new_measure.key = old_measure.key
+                new_measure.ts_numerator = old_measure.ts_numerator
+                new_measure.ts_denominator = old_measure.ts_denominator
+                new_measure.clef_type = old_measure.clef_type
+                new_measure.clef_line = old_measure.clef_line
+                #prepare to check the next measure number in the list.
+                num_found_special_measures += 1
+            
+            
         
 
 
@@ -189,6 +211,7 @@ file_path = "tuba_bg.musicxml"
 #file_path = "tuba_lengthened.musicxml"
 #file_path = "tuba_shortened.musicxml"
 scaling_factor = 2
+print(f"{scaling_factor = }")
 passage = parse_musicxml(file_path)
 # notes = [note for measure in passage.measure_list for note in measure.notes_list]
 # for note in notes:
