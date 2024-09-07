@@ -1,4 +1,5 @@
 from music21 import converter, stream, duration, environment
+import argparse, json
 
 # get environment
 env = environment.Environment()
