@@ -35,15 +35,15 @@ score = converter.parse(file_path)
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
 
-important_elements = ['Instrument', 'KeySignature', 'TimeSignature', 'MetronomeMark']
+important_elements = {'Instrument':None, 'KeySignature':None, 'TimeSignature':None, 'MetronomeMark':None, "Clef":None}
 
-for i, element in enumerate(important_elements):
+for k in important_elements.keys():
     try:
-        important_elements[i] = score.recurse().getElementsByClass(element)[0]
+        important_elements[k] = score.recurse().getElementsByClass(k)[0]
     except:
-        important_elements.remove(element)
+        warnings.warn(f"Key {k} is not found in the provided part")
 
-modified_stream.append(important_elements)
+modified_stream.append([v for v in important_elements.values() if v is not None])
 
 for element in score.recurse().notesAndRests:
     if element.isNote or element.isRest:
