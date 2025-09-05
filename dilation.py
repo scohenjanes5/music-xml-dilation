@@ -1,5 +1,10 @@
-from music21 import converter, stream, duration, environment
-import argparse, json
+from music21 import converter, stream, duration, environment, tempo
+import argparse, json, warnings
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--filename", type=str, help="Filename to dilate", default="tuba-bg.musicxml")
+parser.add_argument("-d", "--dilation", type=float, help="Factor by which to dilate durations", default=2.0)
+args = parser.parse_args()
 
 # get environment
 env = environment.Environment()
@@ -19,15 +24,13 @@ env['musescoreDirectPNGPath'] = '/home/AppImages/musescore_studio_45_portable.ap
 # print('musicXML:  ', env['musicxmlPath'])
 # print('musescore: ', env['musescoreDirectPNGPath'])
 
-file_path = 'tuba-bg.musicxml'  # Replace with the actual file path
+file_path = args.filename
+scaling_factor = args.dilation
+
 parts = file_path.split(".")
 parts[0] += "-dilated"
 output_file = ".".join(parts)
 score = converter.parse(file_path)
-
-# score.show('text')
-
-scaling_factor = 2.0  # Replace with your desired scaling factor
 
 # Create a new stream to store the modified notes and rests
 modified_stream = stream.Stream()
