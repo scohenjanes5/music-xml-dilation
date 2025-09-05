@@ -10,8 +10,10 @@ env = environment.Environment()
 # print('musescore: ', env['musescoreDirectPNGPath'])
 
 # set path if necessary
-env['musicxmlPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.exe'
-env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.exe'
+env['musicxmlPath'] = '/home/AppImages/musescore_studio_45_portable.appimage'
+env['musescoreDirectPNGPath'] = '/home/AppImages/musescore_studio_45_portable.appimage'
+#env['musicxmlPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.exe'
+#env['musescoreDirectPNGPath'] = 'C:\Program Files\MuseScore 3\\bin\MuseScore3.exe'
 
 # print('Environment settings:')
 # print('musicXML:  ', env['musicxmlPath'])
